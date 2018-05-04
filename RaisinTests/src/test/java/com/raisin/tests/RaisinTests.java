@@ -20,15 +20,23 @@ import junit.framework.Assert;
 public class RaisinTests {
 	WebDriver driver;
 	public static String url="https://www.raisin.com/";
-		
+
 	@BeforeTest
 	@Parameters({"pathToDriver"})
 	public void setup(@Optional String pathToDriver)
 	{
-		
+
 		File chromeDriver = null;
 		try {
-			chromeDriver = ResourceUtils.getFile("classpath:BrowserDrivers/chromedriver.exe");
+			if(pathToDriver==null) 
+			{
+				chromeDriver = ResourceUtils.getFile("classpath:BrowserDrivers/chromedriver.exe");
+			}
+			else
+			{
+				chromeDriver = new File(pathToDriver);
+
+			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -43,20 +51,20 @@ public class RaisinTests {
 		//First Step
 		driver.get(url);	
 		Popup popupPage=new Popup(driver);
-				
+
 		HomePage homePage=popupPage.clickOk();
 		OffersPage offersPage=homePage.clickStartSaving();
-		
+
 		offersPage.uncheckEur();
 		offersPage.checkEasyAccess();
 		OffersPage temp=offersPage.clickShowMoreOffers();
 		Thread.sleep(2000);
-		
+
 		Assert.assertEquals("10 offers match your search", offersPage.getText());
 		System.out.println(temp.printOffers());
 	}
-	
-	
+
+
 	@AfterTest
 	public void tearDown()
 	{
